@@ -3,22 +3,22 @@ const { wrapper } = require('axios-cookiejar-support');
 const { CookieJar } = require('tough-cookie');
 
 // ============================================================
-//  CREDENTIALS & CONFIG
+//  CREDENTIALS & CONFIG (Put your details here)
 // ============================================================
-const USERNAME   = "student1"; 
-const PASSWORD   = "student@123";
+const USERNAME = "student1";
+const PASSWORD = "student@123";
 // Ensure this URL matches your portal (check if it should be https)
-const LOGIN_URL  = "http://1.1.1.1/login.html"; 
-const BASE_URL   = "http://google.com";
+const LOGIN_URL = "http://1.1.1.1/login.html";
+const BASE_URL = "http://google.com";
 
 // ============================================================
 //  TIMING KNOBS - Optimized for stability
 // ============================================================
-const FAST_POLL       = 1000;   // 1s - frequency when offline[cite: 1]
-const SLOW_POLL       = 5000;   // 5s - frequency when stable[cite: 1]
-const KEEP_ALIVE_MS   = 30000;  // 30s - prevents idle logout without spamming[cite: 1]
-const PRE_REFRESH_MS  = 8 * 60 * 1000; // 8 min refresh[cite: 1]
-const MAX_RETRIES     = 5;
+const FAST_POLL = 1000;   // 1s - frequency when offline[cite: 1]
+const SLOW_POLL = 5000;   // 5s - frequency when stable[cite: 1]
+const KEEP_ALIVE_MS = 30000;  // 30s - prevents idle logout without spamming[cite: 1]
+const PRE_REFRESH_MS = 8 * 60 * 1000; // 8 min refresh[cite: 1]
+const MAX_RETRIES = 5;
 
 // ============================================================
 //  HTTP CLIENT SETUP
@@ -36,8 +36,8 @@ const client = wrapper(axios.create({
 }));
 
 let lastKeepAlive = 0;
-let lastLogin     = 0;
-let currentSpeed  = SLOW_POLL;
+let lastLogin = 0;
+let currentSpeed = SLOW_POLL;
 let interval;
 let consecutiveFails = 0;
 
@@ -68,7 +68,7 @@ const tryLogin = async () => {
 
     try {
         // 1. Visit portal first to establish session cookies[cite: 1]
-        await client.get(LOGIN_URL).catch(() => {});
+        await client.get(LOGIN_URL).catch(() => { });
 
         // 2. Submit credentials with proper headers[cite: 1]
         const res = await client.post(LOGIN_URL, payload, {
@@ -80,9 +80,9 @@ const tryLogin = async () => {
         });
 
         const body = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
-        
+
         // 3. Check for typical success markers[cite: 1]
-        const success = res.status < 400 && 
+        const success = res.status < 400 &&
             (body.includes('Successful') || body.includes('Authentication') || !body.includes('failed'));
 
         return success;
@@ -97,7 +97,7 @@ const loginBurst = async (reason = "OFFLINE") => {
         if (await tryLogin()) {
             await sleep(500);
             if (await isOnline()) {
-                console.log(`[${ts()}] ✅ Connected! Online session established.`);
+                console.log(`[${ts()}]  Connected! Online session established.`);
                 lastLogin = Date.now();
                 consecutiveFails = 0;
                 return true;
@@ -126,15 +126,15 @@ const loop = async () => {
     if (online) {
         if (now - lastKeepAlive > KEEP_ALIVE_MS) {
             lastKeepAlive = now;
-            await client.get("http://clients3.google.com/generate_204").catch(() => {});
-            console.log(`[${ts()}] 💓 Keep-alive sent`);
+            await client.get("http://clients3.google.com/generate_204").catch(() => { });
+            console.log(`[${ts()}]  Keep-alive sent`);
         }
         if (lastLogin && (now - lastLogin > PRE_REFRESH_MS)) {
             await loginBurst("PRE-REFRESH");
         }
         setSpeed(SLOW_POLL);
     } else {
-        console.log(`[${ts()}] 🔴 Disconnected — Attempting re-login...`);
+        console.log(`[${ts()}]  Disconnected — Attempting re-login...`);
         setSpeed(FAST_POLL);
         await loginBurst("DISCONNECTED");
     }
@@ -142,7 +142,7 @@ const loop = async () => {
 
 // Startup
 (async () => {
-    console.log("🚀 WIFI-GOD-MODE v2.1 STARTING...");
+    console.log(" Auto Login v2.1 STARTING...");
     await loginBurst("STARTUP");
     interval = setInterval(loop, currentSpeed);
 })();
