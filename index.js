@@ -133,7 +133,7 @@ const loop = async () => {
 
 // Startup
 (async () => {
-    console.log("🚀 Auto-Login v2.5 STARTING...");
+    console.log(" Web Page Auto-Login v2.5 STARTING...");
     await loginBurst("STARTUP");
     interval = setInterval(loop, currentSpeed);
 })();
