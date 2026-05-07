@@ -3,21 +3,26 @@ const { wrapper } = require('axios-cookiejar-support');
 const { CookieJar } = require('tough-cookie');
 
 // ============================================================
-//  CREDENTIALS & CONFIG ( Put your credentials here! )
+//  CREDENTIALS & CONFIG
 // ============================================================
 const USERNAME = "student1";
 const PASSWORD = "student@123";
+// Ensure this URL matches your portal (check if it should be https)
 const LOGIN_URL = "http://1.1.1.1/login.html";
 const BASE_URL = "http://google.com";
 
-
+// ============================================================
+//  TIMING KNOBS - Optimized for stability
+// ============================================================
 const FAST_POLL = 1000;   // 1s - frequency when offline[cite: 1]
 const SLOW_POLL = 5000;   // 5s - frequency when stable[cite: 1]
 const KEEP_ALIVE_MS = 30000;  // 30s - prevents idle logout without spamming[cite: 1]
 const PRE_REFRESH_MS = 8 * 60 * 1000; // 8 min refresh[cite: 1]
 const MAX_RETRIES = 5;
 
-
+// ============================================================
+//  HTTP CLIENT SETUP
+// ============================================================
 const jar = new CookieJar();
 const client = wrapper(axios.create({
     timeout: 10000,
@@ -39,6 +44,9 @@ let consecutiveFails = 0;
 const ts = () => new Date().toLocaleTimeString();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// ============================================================
+//  CORE LOGIC
+// ============================================================
 
 const isOnline = async () => {
     try {
@@ -59,9 +67,10 @@ const tryLogin = async () => {
     });
 
     try {
-
+        // 1. Visit portal first to establish session cookies[cite: 1]
         await client.get(LOGIN_URL).catch(() => { });
 
+        // 2. Submit credentials with proper headers[cite: 1]
         const res = await client.post(LOGIN_URL, payload, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -72,7 +81,7 @@ const tryLogin = async () => {
 
         const body = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
 
-
+        // 3. Check for typical success markers[cite: 1]
         const success = res.status < 400 &&
             (body.includes('Successful') || body.includes('Authentication') || !body.includes('failed'));
 
@@ -98,7 +107,7 @@ const loginBurst = async (reason = "OFFLINE") => {
     }
     consecutiveFails++;
     if (consecutiveFails >= 3) {
-        await jar.removeAllCookies();
+        await jar.removeAllCookies(); // Reset if stuck[cite: 1]
     }
     return false;
 };
@@ -118,14 +127,14 @@ const loop = async () => {
         if (now - lastKeepAlive > KEEP_ALIVE_MS) {
             lastKeepAlive = now;
             await client.get("http://clients3.google.com/generate_204").catch(() => { });
-            console.log(`[${ts()}]  Keep-alive sent`);
+            console.log(`[${ts()}] 💓 Keep-alive sent`);
         }
         if (lastLogin && (now - lastLogin > PRE_REFRESH_MS)) {
             await loginBurst("PRE-REFRESH");
         }
         setSpeed(SLOW_POLL);
     } else {
-        console.log(`[${ts()}]  Disconnected — Attempting re-login...`);
+        console.log(`[${ts()}] 🔴 Disconnected — Attempting re-login...`);
         setSpeed(FAST_POLL);
         await loginBurst("DISCONNECTED");
     }
@@ -133,7 +142,7 @@ const loop = async () => {
 
 // Startup
 (async () => {
-    console.log("🚀 Auto-Login v2.5 STARTING...");
+    console.log("🚀 WIFI-GOD-MODE v2.1 STARTING...");
     await loginBurst("STARTUP");
     interval = setInterval(loop, currentSpeed);
 })();
