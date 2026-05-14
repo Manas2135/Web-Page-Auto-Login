@@ -3,14 +3,17 @@ const { wrapper } = require('axios-cookiejar-support');
 const { CookieJar } = require('tough-cookie');
 
 // ============================================================
-//  CREDENTIALS & CONFIG ( Put your credentials here! )
+//  CREDENTIALS & CONFIGURATION - Update these for your portal
 // ============================================================
 const USERNAME = "student1";
 const PASSWORD = "student@123";
+// Ensure this URL matches your portal (check if it should be https)
 const LOGIN_URL = "http://1.1.1.1/login.html";
 const BASE_URL = "http://google.com";
 
-
+// ============================================================
+//                       TIMING KNOBS 
+// ============================================================
 const FAST_POLL = 1000;   // 1s - frequency when offline[cite: 1]
 const SLOW_POLL = 5000;   // 5s - frequency when stable[cite: 1]
 const KEEP_ALIVE_MS = 30000;  // 30s - prevents idle logout without spamming[cite: 1]
@@ -59,9 +62,7 @@ const tryLogin = async () => {
     });
 
     try {
-
         await client.get(LOGIN_URL).catch(() => { });
-
         const res = await client.post(LOGIN_URL, payload, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -72,7 +73,7 @@ const tryLogin = async () => {
 
         const body = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
 
-
+        // 3. Check for typical success markers[cite: 1]
         const success = res.status < 400 &&
             (body.includes('Successful') || body.includes('Authentication') || !body.includes('failed'));
 
@@ -83,7 +84,7 @@ const tryLogin = async () => {
 };
 
 const loginBurst = async (reason = "OFFLINE") => {
-    console.log(`[${ts()}] ⚡ LOGIN ATTEMPT — reason: ${reason}`);
+    console.log(`[${ts()}] LOGIN ATTEMPT — reason: ${reason}`);
     for (let i = 1; i <= MAX_RETRIES; i++) {
         if (await tryLogin()) {
             await sleep(500);
@@ -133,7 +134,7 @@ const loop = async () => {
 
 // Startup
 (async () => {
-    console.log(" Web Page Auto-Login v2.5 STARTING...");
+    console.log(" Web-Page Auto Login v2.5 STARTING...");
     await loginBurst("STARTUP");
     interval = setInterval(loop, currentSpeed);
 })();
