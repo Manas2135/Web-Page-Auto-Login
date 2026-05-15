@@ -11,13 +11,13 @@ const PASSWORD = "student@123";
 const LOGIN_URL = "http://1.1.1.1/login.html";
 const BASE_URL = "http://google.com";
 
-// ============================================================
-//                       TIMING KNOBS 
-// ============================================================
-const FAST_POLL = 1000;   // 1s - frequency when offline[cite: 1]
-const SLOW_POLL = 5000;   // 5s - frequency when stable[cite: 1]
-const KEEP_ALIVE_MS = 30000;  // 30s - prevents idle logout without spamming[cite: 1]
-const PRE_REFRESH_MS = 8 * 60 * 1000; // 8 min refresh[cite: 1]
+
+
+const FAST_POLL = 1000;
+const SLOW_POLL = 5000;
+const KEEP_ALIVE_MS = 30000;
+const PRE_REFRESH_MS = 8 * 60 * 1000;
+
 const MAX_RETRIES = 5;
 
 
@@ -89,7 +89,7 @@ const loginBurst = async (reason = "OFFLINE") => {
         if (await tryLogin()) {
             await sleep(500);
             if (await isOnline()) {
-                console.log(`[${ts()}] ✅ Connected! Online session established.`);
+                console.log(`[${ts()}]  Connected! Online session established.`);
                 lastLogin = Date.now();
                 consecutiveFails = 0;
                 return true;
@@ -132,9 +132,9 @@ const loop = async () => {
     }
 };
 
-// Startup
+
 (async () => {
     console.log(" Web-Page Auto Login v2.5 STARTING...");
     await loginBurst("STARTUP");
     interval = setInterval(loop, currentSpeed);
-})();
+});
