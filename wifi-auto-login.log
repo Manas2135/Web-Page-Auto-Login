@@ -1,0 +1,31 @@
+[6:07:10 pm] ║           WIFI-Auto Login-Active  v3.1              ║
+[6:07:10 pm]   Portal  : http://192.168.200.1:8090/httpclient.html
+[6:07:10 pm]   User    : student1
+[6:07:10 pm]   Polling : 10s (online) / 2s (offline, backs off up to 60s)
+[6:07:10 pm]   Refresh : every 8 min
+
+[6:07:10 pm] 
+⚡ LOGIN ATTEMPT — reason: STARTUP
+[6:07:10 pm]    → Try 1/5...
+[6:07:12 pm] ✅ Connected! Session is live.
+[6:07:42 pm] 💓 Keep-alive
+[6:08:13 pm] 💓 Keep-alive
+[6:08:43 pm] 💓 Keep-alive
+[6:09:14 pm] 💓 Keep-alive
+[6:09:44 pm] 💓 Keep-alive
+[6:10:14 pm] 💓 Keep-alive
+[6:10:45 pm] 💓 Keep-alive
+[6:11:15 pm] 💓 Keep-alive
+[6:11:46 pm] 💓 Keep-alive
+[6:12:16 pm] 💓 Keep-alive
+[6:12:47 pm] 💓 Keep-alive
+[6:13:17 pm] 💓 Keep-alive
+[6:13:48 pm] 💓 Keep-alive
+[6:14:18 pm] 💓 Keep-alive
+[6:14:49 pm] 💓 Keep-alive
+[6:15:19 pm] 💓 Keep-alive
+[6:15:19 pm] 🔁 Pre-emptive session refresh...
+[6:15:19 pm] 
+⚡ LOGIN ATTEMPT — reason: PRE-REFRESH
+[6:15:19 pm]    → Try 1/5...
+[6:15:21 pm] ✅ Connected! Session is live.

@@ -2,6 +2,7 @@
 title WIFI-GOD-MODE v3.0
 color 0A
 
+:: ── Check Node.js is installed ──────────────────────────────
 where node >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Node.js is not installed or not in your PATH.
@@ -10,8 +11,8 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: ──   cd /d "C:\Users\YOUR FILE LOCATION"────────────────────────────────────
-
+:: ── Move to script folder (Edit)────────────────────────────────────
+cd /d "C:\Users\Manas Shekhar Tiwari\Documents\WIFI" 
 
 :: ── Install dependencies if missing ─────────────────────────
 if not exist "node_modules" (
@@ -24,7 +25,7 @@ if not exist "node_modules" (
 :start
 cls
 echo ============================================
-echo  Web Page Auto Login  --  Auto Login Active
+echo    WIFI-GOD-MODE  --  Auto Login Active
 echo    Press Ctrl+C to stop
 echo ============================================
 echo.
